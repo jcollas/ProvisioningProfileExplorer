@@ -12,76 +12,86 @@ import Cocoa
 //import SecurityFoundation
 
 
-class ProvisioningProfile: NSObject {
+struct ProvisioningProfile {
 
-    var name: String = ""
-    var uuid: String = ""
-    var teamName: String = ""
+    struct JSON {
+        static let name = "Name"
+        static let creationDate = "CreationDate"
+        static let expirationDate = "ExpirationDate"
+        static let uuid = "UUID"
+        static let teamName = "TeamName"
+        static let teamID = "TeamIdentifier"
+        static let appIDName = "AppIDName"
+        static let appIDPrefix = "ApplicationIndentifierPrefix"
+        static let platform = "Platform"
+        static let timeToLive = "TimeToLive"
+        static let provisionedDevices = "ProvisionedDevices"
+        static let developerCertificates = "DeveloperCertificates"
+        static let entitlements = "Entitlements"
+        static let version = "Version"
+    }
+
+    var name = ""
+    var uuid = ""
+    var teamName = ""
     var teamIdentifier = [String]()
     var appIDName:String = ""
     var provisionedDevices = [String]()
     var timeToLive :NSNumber = 0
-    var expirationDate: NSDate = NSDate(timeIntervalSinceReferenceDate: 0)
-    var creationDate: NSDate = NSDate(timeIntervalSinceReferenceDate: 0)
+    var expirationDate: Date = Date(timeIntervalSinceReferenceDate: 0)
+    var creationDate: Date = Date(timeIntervalSinceReferenceDate: 0)
     var lastDays = 0
-    var entitlements:String = ""
-    let calendar = NSCalendar.currentCalendar()
-    var certificates:[Certificate]=[]
+    var entitlements = ""
+    let calendar = Calendar.current
+    var certificates: [Certificate] = []
     var fileName = ""
-    var fileModificationDate:NSDate = NSDate(timeIntervalSinceReferenceDate: 0)
+    var fileModificationDate:Date = Date(timeIntervalSinceReferenceDate: 0)
     var fileSize:UInt64 = 0
 
 
-    init(path:String){
-        super.init()
+    init(url: URL) {
 
-        Interpretation(path)
-    }
-
-
-    func Interpretation(path:String){
-
-        guard let encryptedData = NSData(contentsOfFile: path) else {
-            return
-        }
-        guard let plistData = decode(encryptedData) else{
-            return
-        }
-        guard let plist = try? NSPropertyListSerialization.propertyListWithData(plistData, options: NSPropertyListMutabilityOptions.MutableContainersAndLeaves, format: nil) as! NSDictionary else {
+        guard let encryptedData = try? Data(contentsOf: url) else {
             return
         }
 
-        fileName = path
+        guard let plistData = decode(encryptedData) else {
+            return
+        }
 
-        if let attr: NSDictionary = try! NSFileManager.defaultManager().attributesOfItemAtPath(path){
+        guard let plist = try? PropertyListSerialization.propertyList(from: plistData, options: PropertyListSerialization.MutabilityOptions.mutableContainersAndLeaves, format: nil) as! NSDictionary else {
+            return
+        }
+
+        fileName = url.path
+
+        if let attr: NSDictionary = try! FileManager.default.attributesOfItem(atPath: fileName) as NSDictionary{
             fileModificationDate = attr.fileModificationDate()!
             fileSize = attr.fileSize()
         }
 
 
-        name = plist.objectForKey("Name") as! String
-        creationDate = plist.objectForKey("CreationDate") as! NSDate
-        expirationDate = plist.objectForKey("ExpirationDate") as! NSDate
+        name = plist[JSON.name] as! String
+        creationDate = plist[JSON.creationDate] as! Date
+        expirationDate = plist[JSON.expirationDate] as! Date
         // 期限までの残り日数
-        lastDays = calendar.components([.Day], fromDate:expirationDate, toDate: NSDate(),options: NSCalendarOptions.init(rawValue: 0)).day
+        lastDays = (calendar as NSCalendar).components([.day], from:expirationDate, to: Date(),options: []).day!
         lastDays *= -1
-        uuid = plist.objectForKey("UUID") as! String
-        teamName = plist.objectForKey("TeamName") as! String
-        teamIdentifier = (plist.objectForKey("TeamIdentifier") as? [String])!
-        appIDName = plist.objectForKey("AppIDName") as! String
-        timeToLive = plist.objectForKey("TimeToLive") as! NSNumber
-        if let devices = plist.objectForKey("ProvisionedDevices") as? [String] {
-            provisionedDevices = devices.sort{ $0 < $1 }
+        uuid = plist[JSON.uuid] as! String
+        teamName = plist[JSON.teamName] as! String
+        teamIdentifier = plist[JSON.teamID] as? [String] ?? []
+        appIDName = plist[JSON.appIDName] as! String
+        timeToLive = plist[JSON.timeToLive] as! NSNumber
+        if let devices = plist[JSON.provisionedDevices] as? [String] {
+            provisionedDevices = devices.sorted{ $0 < $1 }
         }
         // Certificates
-        let developerCertificates = plist.objectForKey("DeveloperCertificates") as! NSArray
+        let developerCertificates = plist[JSON.developerCertificates] as! [Any]
         certificates = decodeCertificate(developerCertificates)
-        certificates.sortInPlace { (a,b) in return a.summary < b.summary }
-
-
+        certificates.sort { (a,b) in return a.summary < b.summary }
 
         // Entitlements
-        let dictionary = plist.objectForKey("Entitlements") as! NSDictionary
+        let dictionary = plist[JSON.entitlements] as! NSDictionary
         if dictionary.count > 0 {
             let buffer = NSMutableString()
             buffer.appendFormat("<pre>")
@@ -93,59 +103,19 @@ class ProvisioningProfile: NSObject {
         }
     }
 
-    func decodeCertificate(array:NSArray) -> [Certificate] {
-
-        var certificates:[Certificate]=[];
-        let calendar = NSCalendar.currentCalendar()
+    func decodeCertificate(_ array: [Any]) -> [Certificate] {
+        var certificates: [Certificate] = []
 
         for data in array {
-            var date:NSDate? = nil
-            var summary = ""
-            var lastDays = 0
-            let certificateRef:SecCertificate? =  SecCertificateCreateWithData(nil,data as! CFData)
-            if (certificateRef != nil) {
-                summary = SecCertificateCopySubjectSummary(certificateRef!) as! String
-                let valuesDict = SecCertificateCopyValues(certificateRef!, [kSecOIDInvalidityDate],nil)!
+            let certificate = Certificate(data: data as! Data)
 
-                let invalidityDateDictionaryRef = CFDictionaryGetValue(valuesDict, unsafeAddressOf(kSecOIDInvalidityDate));
-                if invalidityDateDictionaryRef != nil {
-                    let credential = unsafeBitCast(invalidityDateDictionaryRef, CFDictionaryRef.self)
-
-//                    CFShow(credential);
-//                    <CFBasicHash 0x600000263d80 [0x7fff79f4d440]>{type = immutable dict, count = 4,
-//                        entries =>
-//                        1 : <CFString 0x7fff7a49fdd0 [0x7fff79f4d440]>{contents = "label"} = <CFString 0x7fff7a4a0050 [0x7fff79f4d440]>{contents = "Expires"}
-//                        2 : <CFString 0x7fff7a49fe10 [0x7fff79f4d440]>{contents = "value"} = 2016-04-26 03:15:28 +0000
-//                        3 : <CFString 0x7fff7a49fdf0 [0x7fff79f4d440]>{contents = "localized label"} = <CFString 0x7fff7a4a0050 [0x7fff79f4d440]>{contents = "Expires"}
-//                        4 : <CFString 0x7fff7a49fdb0 [0x7fff79f4d440]>{contents = "type"} = <CFString 0x7fff7a49ff30 [0x7fff79f4d440]>{contents = "date"}
-//                    }
-
-                    var key:CFString = "label"
-                    var value = CFDictionaryGetValue(credential,unsafeAddressOf(key))
-                    var label = unsafeBitCast(value, NSString.self)
-                    if label == "Expires" {
-                        key = "value"
-                        value = CFDictionaryGetValue(credential,unsafeAddressOf(key))
-                        date = unsafeBitCast(value, NSDate.self)
-
-                        // 期限までの残り日数
-                        lastDays = calendar.components([.Day], fromDate:date!, toDate: NSDate(),options: NSCalendarOptions.init(rawValue: 0)).day
-                        lastDays *= -1
-
-
-                    }
-                }
-                certificates.append(Certificate(summary:summary,expires: date,lastDays: lastDays))
-            }
+            certificates.append(certificate)
         }
+
         return certificates
     }
 
-
-
-    func displayEntitlements(tab:Int,  key:String, value:AnyObject, buffer:NSMutableString) {
-
-
+    func displayEntitlements(_ tab:Int,  key:String, value:AnyObject, buffer:NSMutableString) {
 
         if value is NSDictionary {
             if key.isEmpty {
@@ -156,27 +126,27 @@ class ProvisioningProfile: NSObject {
 
             let dictionary = value as! NSDictionary
             var keys = dictionary.allKeys as! [String]
-            keys.sortInPlace()
+            keys.sort()
 
-            for var key in keys {
-                displayEntitlements(tab + 1, key: key, value: dictionary.valueForKey(key)!, buffer: buffer)
+            for key in keys {
+                displayEntitlements(tab + 1, key: key, value: dictionary.value(forKey: key)! as AnyObject, buffer: buffer)
             }
             buffer.appendFormat("%@}\n", space(tab));
 
         } else if value is NSArray {
             let array = value as! NSArray
             buffer.appendFormat("%@%@ = (\n", space(tab), key)
-            for var value in array {
+            for value in array {
                 displayEntitlements(tab + 1, key: "", value: value as! NSObject, buffer: buffer)
             }
             buffer.appendFormat("%@)\n", space(tab))
 
-        } else if value is NSData {
-            let data = value as! NSData
+        } else if value is Data {
+            let data = value as! Data
             if key.isEmpty {
-                buffer.appendFormat("%@%d bytes of data\n", space(tab), data.length);
+                buffer.appendFormat("%@%d bytes of data\n", space(tab), data.count);
             } else {
-                buffer.appendFormat("%@%@ = %d bytes of data\n", space(tab), key, data.length)
+                buffer.appendFormat("%@%@ = %d bytes of data\n", space(tab), key, data.count)
             }
         } else {
             if key.isEmpty {
@@ -187,7 +157,7 @@ class ProvisioningProfile: NSObject {
         }
     }
 
-    func space(num:Int) -> String {
+    func space(_ num:Int) -> String {
         var tmp = ""
         for _ in 0..<num {
             tmp = tmp + "    "
@@ -195,134 +165,134 @@ class ProvisioningProfile: NSObject {
         return tmp
     }
 
-    func LocalDate(date: NSDate) -> String {
-        let calendar = NSCalendar.currentCalendar()
-        let comps = calendar.components([.Year, .Month, .Day, .Hour, .Minute, .Second], fromDate:date)
+    func LocalDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let comps = (calendar as NSCalendar).components([.year, .month, .day, .hour, .minute, .second], from:date)
         let year = comps.year
         let month = comps.month
         let day = comps.day
         let hour = comps.hour
         let minute = comps.minute
         let second = comps.second
-        return String(format: "%04d/%02d/%02d %02d:%02d:%02d", year,month,day,hour,minute,second)
+        return String(format: "%04d/%02d/%02d %02d:%02d:%02d", year!,month!,day!,hour!,minute!,second!)
     }
 
-    func decode(encryptedData:NSData) -> NSData? {
+    func decode(_ encryptedData:Data) -> Data? {
         var decoder: CMSDecoder?;
         var decodedData: CFData?;
 
         CMSDecoderCreate(&decoder);
-        CMSDecoderUpdateMessage(decoder!, encryptedData.bytes, encryptedData.length);
+        CMSDecoderUpdateMessage(decoder!, (encryptedData as NSData).bytes, encryptedData.count);
         CMSDecoderFinalizeMessage(decoder!);
         CMSDecoderCopyContent(decoder!, &decodedData);
-        return decodedData
+        return decodedData as? Data
     }
 
     func generateHTML() -> String {
 
         var css = ""
-        if let filePath = NSBundle.mainBundle().pathForResource("style", ofType: "css"){
+        if let filePath = Bundle.main.path(forResource: "style", ofType: "css"){
             css  = try! String(contentsOfFile: filePath)
         }
         var html = "<html>"
-        html.appendContentsOf("<style>" + css + "</style>")
+        html.append("<style>" + css + "</style>")
 
         if lastDays < 0 {
-            html.appendContentsOf("<body style=\"background-color: #ff8888;\">")
+            html.append("<body style=\"background-color: #ff8888;\">")
         }else{
-            html.appendContentsOf("<body>")
+            html.append("<body>")
         }
 
-        html.appendContentsOf(String(format: "<div class=\"name\">%@</div>",name))
+        html.append(String(format: "<div class=\"name\">%@</div>",name))
         html = appendHTML(html,key: "Profile UUID",value: uuid)
         html = appendHTML(html,key: "Time To Live",value: "\(timeToLive)")
         html = appendHTML(html,key: "Profile Team",value: teamName)
         if teamIdentifier.count>0 {
-            html.appendContentsOf("(")
-            for var team in teamIdentifier {
-                html.appendContentsOf(String(format: "%@ ",team))
+            html.append("(")
+            for team in teamIdentifier {
+                html.append(String(format: "%@ ",team))
             }
-            html.appendContentsOf(")")
+            html.append(")")
         }
         html = appendHTML(html,key: "Creation Date",value: LocalDate(creationDate))
         html = appendHTML(html,key: "Expiretion Date",value: LocalDate(expirationDate))
         if lastDays < 0 {
-            html.appendContentsOf(" expiring ")
+            html.append(" expiring ")
         }else{
-            html.appendContentsOf(" ( " + lastDays.description + " days )")
+            html.append(" ( " + lastDays.description + " days )")
         }
         html = appendHTML(html,key: "App ID Name",value: appIDName)
 
         // DEVELOPER CRTIFICATES
         var n = 1
         if certificates.count > 0 {
-            html.appendContentsOf("<div class=\"title\">DEVELOPER CRTIFICATES</div>")
-            html.appendContentsOf("<table>")
-            for var certificate in certificates {
-                html.appendContentsOf("<tr>")
-                html.appendContentsOf("<td>\(n)</td>")
-                html.appendContentsOf("<td>\(certificate.summary)</td>")
+            html.append("<div class=\"title\">DEVELOPER CRTIFICATES</div>")
+            html.append("<table>")
+            for certificate in certificates {
+                html.append("<tr>")
+                html.append("<td>\(n)</td>")
+                html.append("<td>\(certificate.summary)</td>")
                 if certificate.expires == nil {
-                    html.appendContentsOf("<td>No invalidity date in certificate</td>")
+                    html.append("<td>No invalidity date in certificate</td>")
                 }else{
 
                     if certificate.lastDays < 0 {
-                        html.appendContentsOf("<td>expiring</td>")
+                        html.append("<td>expiring</td>")
                     }else{
-                        html.appendContentsOf("<td>Expires in " + certificate.lastDays.description + " days </td>")
+                        html.append("<td>Expires in " + certificate.lastDays.description + " days </td>")
                     }
                 }
-                html.appendContentsOf("</tr>")
+                html.append("</tr>")
                 n += 1
             }
-            html.appendContentsOf("</table>")
+            html.append("</table>")
         }
 
 
         // ENTITLEMENTS
-        html.appendContentsOf("<div class=\"title\">ENTITLEMENTS</div>")
-        html.appendContentsOf(entitlements)
+        html.append("<div class=\"title\">ENTITLEMENTS</div>")
+        html.append(entitlements)
 
         // DEVICES
         if provisionedDevices.count > 0 {
-            html.appendContentsOf("<div class=\"title\">DEVICES ")
-            html.appendContentsOf(String(format: "(%d DEVICES)",provisionedDevices.count))
-            html.appendContentsOf("</div>")
+            html.append("<div class=\"title\">DEVICES ")
+            html.append(String(format: "(%d DEVICES)",provisionedDevices.count))
+            html.append("</div>")
 
-            html.appendContentsOf("<table>")
-            html.appendContentsOf("<tr><td></td><td>UUID</td></tr>")
+            html.append("<table>")
+            html.append("<tr><td></td><td>UUID</td></tr>")
             var c = "*"
-            for var device in provisionedDevices {
-                html.appendContentsOf("<tr>")
-                let firstChar = (device as NSString).substringToIndex(1)
+            for device in provisionedDevices {
+                html.append("<tr>")
+                let firstChar = (device as NSString).substring(to: 1)
                 if firstChar != c {
                     c = firstChar
-                    html.appendContentsOf(String(format: "<td>%@-></td>",c))
+                    html.append(String(format: "<td>%@-></td>",c))
                 }else{
-                    html.appendContentsOf(String(format: "<td></td>"))
+                    html.append(String(format: "<td></td>"))
                 }
-                html.appendContentsOf(String(format: "<td>%@</td>",device))
-                html.appendContentsOf("</tr>")
+                html.append(String(format: "<td>%@</td>",device))
+                html.append("</tr>")
             }
-            html.appendContentsOf("</table>")
+            html.append("</table>")
         }else{
-            html.appendContentsOf("<div class=\"title\">DEVICES (Distribution Profile)</div>")
-            html.appendContentsOf("<br>No Devices")
+            html.append("<div class=\"title\">DEVICES (Distribution Profile)</div>")
+            html.append("<br>No Devices")
         }
 
         // FILE INFOMATION
-        html.appendContentsOf("<div class=\"title\">FILE INFOMATION</div>")
-        html.appendContentsOf("<br>Path: \(fileName)")
-        html.appendContentsOf("<br>size: \(fileSize/1000)Kbyte")
-        html.appendContentsOf("<br>ModificationDate: \(LocalDate(fileModificationDate))")
+        html.append("<div class=\"title\">FILE INFOMATION</div>")
+        html.append("<br>Path: \(fileName)")
+        html.append("<br>size: \(fileSize/1000)Kbyte")
+        html.append("<br>ModificationDate: \(LocalDate(fileModificationDate))")
 
 
-        html.appendContentsOf("</body>")
-        html.appendContentsOf("</html>")
+        html.append("</body>")
+        html.append("</html>")
         return html
     }
 
-    func appendHTML(html:String, key:String, value:String) -> String{
+    func appendHTML(_ html:String, key:String, value:String) -> String{
         return String(format: "%@<br>%@: %@",html,key,value)
     }
 }
