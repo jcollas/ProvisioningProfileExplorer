@@ -44,10 +44,10 @@ class ViewController: NSViewController {
         // 一番上を選択する
         let indexSet = IndexSet(integer: 0)
         tableView.selectRowIndexes(indexSet, byExtendingSelection: true)
-        webView.mainFrame.loadHTMLString(viewProfiles[0].generateHTML(),baseURL: nil)
+
+        let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles[0])
+        webView.mainFrame.loadHTMLString(profileDisplay.generateHTML(),baseURL: nil)
     }
-
-
 
     //search
     func Search(_ searchText:String){
@@ -73,7 +73,6 @@ class ViewController: NSViewController {
     @IBAction func changeSearchField(_ sender: NSSearchFieldCell) {
         Search(sender.stringValue)
     }
-
 
     // ローカルタイムでのNSDate表示
     func LocalDate(_ date: Date,lastDays: Int) -> String {
@@ -133,10 +132,14 @@ extension ViewController: NSTableViewDataSource {
 extension ViewController: NSTableViewDelegate {
 
     func tableViewSelectionDidChange(_ notification: Notification) {
-        if 0 <= tableView.selectedRow && tableView.selectedRow < viewProfiles.count {
-            webView.mainFrame.loadHTMLString(viewProfiles[tableView.selectedRow].generateHTML(),baseURL: nil)
+        let row = tableView.selectedRow
+
+        if 0 <= row && row < viewProfiles.count {
+            let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles[row])
+
+            webView.mainFrame.loadHTMLString(profileDisplay.generateHTML(), baseURL: nil)
         } else {
-            webView.mainFrame.loadHTMLString("",baseURL: nil)
+            webView.mainFrame.loadHTMLString("", baseURL: nil)
         }
     }
 
@@ -179,6 +182,7 @@ extension ViewController: NSTableViewDelegate {
             }
             break // 一回でいい
         }
+
         tableView.reloadData()
     }
 

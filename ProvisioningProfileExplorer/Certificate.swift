@@ -14,15 +14,18 @@ struct Certificate {
     var lastDays = 0
 
     init(data: Data) {
-        let calendar = Calendar.current
 
-        if let certificateRef = SecCertificateCreateWithData(nil,data as CFData) {
-            summary = SecCertificateCopySubjectSummary(certificateRef) as! String
-            let options = [kSecOIDInvalidityDate] as CFArray
-            let valuesDict = SecCertificateCopyValues(certificateRef, options, nil)!
+        guard let certificateRef = SecCertificateCreateWithData(nil,data as CFData) else {
+            return
+        }
 
-            if let invalidityDateDictionaryRef = CFDictionaryGetValue(valuesDict, Unmanaged.passUnretained(kSecOIDInvalidityDate).toOpaque()) {
-                let credential = unsafeBitCast(invalidityDateDictionaryRef, to: CFDictionary.self)
+        summary = SecCertificateCopySubjectSummary(certificateRef) as String? ?? ""
+        let options = [kSecOIDInvalidityDate] as CFArray
+
+        let valuesDict = SecCertificateCopyValues(certificateRef, options, nil)
+
+        let values = valuesDict as? [String: Any] ?? [:]
+        if let credential = values[kSecOIDInvalidityDate as String] as? [String: Any] {
 
 //                    CFShow(credential)
 //                    <CFBasicHash 0x600000263d80 [0x7fff79f4d440]>{type = immutable dict, count = 4,
@@ -33,19 +36,15 @@ struct Certificate {
 //                        4 : <CFString 0x7fff7a49fdb0 [0x7fff79f4d440]>{contents = "type"} = <CFString 0x7fff7a49ff30 [0x7fff79f4d440]>{contents = "date"}
 //                    }
 
-                var key = "label" as CFString
-                var value = CFDictionaryGetValue(credential, Unmanaged.passUnretained(key).toOpaque())
-                let label = unsafeBitCast(value, to: NSString.self)
-                if label == "Expires" {
-                    key = "value" as CFString
-                    value = CFDictionaryGetValue(credential, Unmanaged.passUnretained(key).toOpaque())
-                    expires = unsafeBitCast(value, to: Date.self)
+            let label = credential["label"] as? String
+            if label == "Expires" {
+                expires = credential["value"] as? Date
 
-                    // 期限までの残り日数
-                    lastDays = (calendar as NSCalendar).components([.day], from:expires!, to: Date(),options: []).day!
-                    lastDays *= -1
-                }
+                // 期限までの残り日数
+                lastDays = (Calendar.current as NSCalendar).components([.day], from: expires!, to: Date(), options: []).day!
+                lastDays *= -1
             }
         }
     }
+    
 }
