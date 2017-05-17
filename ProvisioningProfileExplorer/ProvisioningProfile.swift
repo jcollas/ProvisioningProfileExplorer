@@ -111,4 +111,8 @@ struct ProvisioningProfile {
         return nil
     }
 
+    var isExpired: Bool {
+        return lastDays < 0
+    }
+
 }

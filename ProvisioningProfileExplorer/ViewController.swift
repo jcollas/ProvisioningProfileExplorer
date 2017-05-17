@@ -26,7 +26,7 @@ class ViewController: NSViewController {
 
         let manager = FileManager.default
 
-        let path =  NSHomeDirectory() + "/Library/MobileDevice/Provisioning Profiles"
+        let path = NSHomeDirectory() + "/Library/MobileDevice/Provisioning Profiles"
         let provisioningUrl = URL(fileURLWithPath: path)
         let profileUrls = try! manager.contentsOfDirectory(at: provisioningUrl, includingPropertiesForKeys: nil)
 
@@ -47,10 +47,41 @@ class ViewController: NSViewController {
 
         let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles[0])
         webView.mainFrame.loadHTMLString(profileDisplay.generateHTML(),baseURL: nil)
+
+        _ = duplicateProfiles()
+    }
+
+    func activeProfiles() -> [ProvisioningProfile] {
+        return []
+    }
+
+    func expiredProfiles() -> [ProvisioningProfile] {
+        return _profiles.filter { $0.isExpired }
+    }
+
+    func duplicateProfiles() -> [ProvisioningProfile] {
+        var allDups: [ProvisioningProfile] = []
+        var dups: [String: [ProvisioningProfile]] = [:]
+
+        // group profiles by profile name
+        for profile in _profiles {
+            let name = profile.name
+            dups[name] == nil ?
+                dups[name] = [profile] :
+                dups[name]?.append(profile)
+        }
+
+        for key in dups.keys {
+            if let values = dups[key]?.sorted(by: { $0.expirationDate > $1.expirationDate}) {
+            allDups.append(contentsOf: Array(values[1..<values.count]))
+            }
+        }
+
+        return allDups
     }
 
     //search
-    func Search(_ searchText:String){
+    func Search(_ searchText: String){
         print("Search(\(searchText))")
         if searchText == "" {
             viewProfiles = _profiles
@@ -87,7 +118,6 @@ class ViewController: NSViewController {
         }
         return String(format: "%04d/%02d/%02d %@", year!,month!,day!,last)
     }
-
 
     override var representedObject: Any? {
         didSet {
