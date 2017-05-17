@@ -38,16 +38,14 @@ struct ProvisioningProfile {
     var appIDName:String = ""
     var provisionedDevices = [String]()
     var timeToLive :NSNumber = 0
-    var expirationDate: Date = Date(timeIntervalSinceReferenceDate: 0)
-    var creationDate: Date = Date(timeIntervalSinceReferenceDate: 0)
+    var expirationDate = Date(timeIntervalSinceReferenceDate: 0)
+    var creationDate = Date(timeIntervalSinceReferenceDate: 0)
     var lastDays = 0
     var entitlements = ""
-    let calendar = Calendar.current
     var certificates: [Certificate] = []
     var fileName = ""
-    var fileModificationDate:Date = Date(timeIntervalSinceReferenceDate: 0)
+    var fileModificationDate = Date(timeIntervalSinceReferenceDate: 0)
     var fileSize:UInt64 = 0
-
 
     init(url: URL) {
 
@@ -65,12 +63,12 @@ struct ProvisioningProfile {
 
         fileName = url.path
 
-        if let attr: NSDictionary = try! FileManager.default.attributesOfItem(atPath: fileName) as NSDictionary{
+        if let attr: NSDictionary = try! FileManager.default.attributesOfItem(atPath: fileName) as NSDictionary {
             fileModificationDate = attr.fileModificationDate()!
             fileSize = attr.fileSize()
         }
 
-
+        let calendar = Calendar.current
         name = plist[JSON.name] as! String
         creationDate = plist[JSON.creationDate] as! Date
         expirationDate = plist[JSON.expirationDate] as! Date
