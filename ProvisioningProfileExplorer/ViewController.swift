@@ -177,7 +177,7 @@ extension ViewController: NSTableViewDelegate {
                     viewProfiles.sort { $0.uuid > $1.uuid }
                 }
             }
-            break; // 一回でいい
+            break // 一回でいい
         }
         tableView.reloadData()
     }

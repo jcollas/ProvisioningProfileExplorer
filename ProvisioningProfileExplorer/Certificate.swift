@@ -24,7 +24,7 @@ struct Certificate {
             if let invalidityDateDictionaryRef = CFDictionaryGetValue(valuesDict, Unmanaged.passUnretained(kSecOIDInvalidityDate).toOpaque()) {
                 let credential = unsafeBitCast(invalidityDateDictionaryRef, to: CFDictionary.self)
 
-//                    CFShow(credential);
+//                    CFShow(credential)
 //                    <CFBasicHash 0x600000263d80 [0x7fff79f4d440]>{type = immutable dict, count = 4,
 //                        entries =>
 //                        1 : <CFString 0x7fff7a49fdd0 [0x7fff79f4d440]>{contents = "label"} = <CFString 0x7fff7a4a0050 [0x7fff79f4d440]>{contents = "Expires"}

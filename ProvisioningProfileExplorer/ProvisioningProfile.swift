@@ -129,7 +129,7 @@ struct ProvisioningProfile {
             for key in keys {
                 displayEntitlements(tab + 1, key: key, value: dictionary.value(forKey: key)! as AnyObject, buffer: buffer)
             }
-            buffer.appendFormat("%@}\n", space(tab));
+            buffer.appendFormat("%@}\n", space(tab))
 
         } else if value is NSArray {
             let array = value as! NSArray
@@ -142,7 +142,7 @@ struct ProvisioningProfile {
         } else if value is Data {
             let data = value as! Data
             if key.isEmpty {
-                buffer.appendFormat("%@%d bytes of data\n", space(tab), data.count);
+                buffer.appendFormat("%@%d bytes of data\n", space(tab), data.count)
             } else {
                 buffer.appendFormat("%@%@ = %d bytes of data\n", space(tab), key, data.count)
             }
@@ -176,13 +176,13 @@ struct ProvisioningProfile {
     }
 
     func decode(_ encryptedData:Data) -> Data? {
-        var decoder: CMSDecoder?;
-        var decodedData: CFData?;
+        var decoder: CMSDecoder?
+        var decodedData: CFData?
 
-        CMSDecoderCreate(&decoder);
-        CMSDecoderUpdateMessage(decoder!, (encryptedData as NSData).bytes, encryptedData.count);
-        CMSDecoderFinalizeMessage(decoder!);
-        CMSDecoderCopyContent(decoder!, &decodedData);
+        CMSDecoderCreate(&decoder)
+        CMSDecoderUpdateMessage(decoder!, (encryptedData as NSData).bytes, encryptedData.count)
+        CMSDecoderFinalizeMessage(decoder!)
+        CMSDecoderCopyContent(decoder!, &decodedData)
         return decodedData as? Data
     }
 
