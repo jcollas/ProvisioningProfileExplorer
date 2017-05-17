@@ -148,37 +148,33 @@ extension ViewController: NSTableViewDelegate {
             case "name":
                 if sortDescriptor.ascending {
 
-                    viewProfiles.sort { (a,b) in return a.name < b.name }
+                    viewProfiles.sort { $0.name < $1.name }
                 } else {
-                    viewProfiles.sort { (a,b) in return a.name > b.name }
+                    viewProfiles.sort { $0.name > $1.name }
                 }
 
             case "teamName":
                 if sortDescriptor.ascending {
-                    viewProfiles.sort { (a,b) in return a.teamName < b.teamName }
+                    viewProfiles.sort { $0.teamName < $1.teamName }
                 } else {
-                    viewProfiles.sort { (a,b) in return a.teamName > b.teamName }
-                }
-
-            case "uuid":
-                if sortDescriptor.ascending {
-                    viewProfiles.sort { (a,b) in return a.uuid < b.uuid }
-                } else {
-                    viewProfiles.sort { (a,b) in return a.uuid > b.uuid }
+                    viewProfiles.sort { $0.teamName > $1.teamName }
                 }
 
             case "expirationDate":
                 if sortDescriptor.ascending {
-                    viewProfiles.sort { (a,b) in return a.expirationDate.timeIntervalSince1970 < b.expirationDate.timeIntervalSince1970 }
+                    viewProfiles.sort { $0.expirationDate.timeIntervalSince1970 < $1.expirationDate.timeIntervalSince1970 }
                 } else {
-                    viewProfiles.sort { (a,b) in return a.expirationDate.timeIntervalSince1970 > b.expirationDate.timeIntervalSince1970 }
+                    viewProfiles.sort { $0.expirationDate.timeIntervalSince1970 > $1.expirationDate.timeIntervalSince1970 }
                 }
+
+            case "uuid":
+                fallthrough
 
             default:
                 if sortDescriptor.ascending {
-                    viewProfiles.sort { (a,b) in return a.uuid < b.uuid }
+                    viewProfiles.sort { $0.uuid < $1.uuid }
                 } else {
-                    viewProfiles.sort { (a,b) in return a.uuid > b.uuid }
+                    viewProfiles.sort { $0.uuid > $1.uuid }
                 }
             }
             break; // 一回でいい

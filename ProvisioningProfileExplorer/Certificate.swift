@@ -1,5 +1,5 @@
 //
-//  ertificate.swift
+//  Certificate.swift
 //  ProvisioningProfileExplorer
 //
 //  Created by hirauchi.shinichi on 2016/04/16.

@@ -86,7 +86,7 @@ struct ProvisioningProfile {
         // Certificates
         let developerCertificates = plist[JSON.developerCertificates] as! [Any]
         certificates = decodeCertificate(developerCertificates)
-        certificates.sort { (a,b) in return a.summary < b.summary }
+        certificates.sort { $0.summary < $1.summary }
 
         // Entitlements
         let dictionary = plist[JSON.entitlements] as! NSDictionary
