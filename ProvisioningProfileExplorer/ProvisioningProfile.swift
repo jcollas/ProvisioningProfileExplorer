@@ -201,25 +201,25 @@ struct ProvisioningProfile {
             html.append("<body>")
         }
 
-        html.append(String(format: "<div class=\"name\">%@</div>",name))
-        html = appendHTML(html,key: "Profile UUID",value: uuid)
-        html = appendHTML(html,key: "Time To Live",value: "\(timeToLive)")
-        html = appendHTML(html,key: "Profile Team",value: teamName)
+        html.append("<div class=\"name\">\(name)</div>")
+        html = appendHTML(html, key: "Profile UUID",value: uuid)
+        html = appendHTML(html, key: "Time To Live",value: "\(timeToLive)")
+        html = appendHTML(html, key: "Profile Team",value: teamName)
         if teamIdentifier.count>0 {
             html.append("(")
             for team in teamIdentifier {
-                html.append(String(format: "%@ ",team))
+                html.append("\(team) ")
             }
             html.append(")")
         }
-        html = appendHTML(html,key: "Creation Date",value: LocalDate(creationDate))
-        html = appendHTML(html,key: "Expiretion Date",value: LocalDate(expirationDate))
+        html = appendHTML(html, key: "Creation Date", value: LocalDate(creationDate))
+        html = appendHTML(html, key: "Expiretion Date",value: LocalDate(expirationDate))
         if lastDays < 0 {
             html.append(" expiring ")
         }else{
             html.append(" ( " + lastDays.description + " days )")
         }
-        html = appendHTML(html,key: "App ID Name",value: appIDName)
+        html = appendHTML(html, key: "App ID Name", value: appIDName)
 
         // DEVELOPER CRTIFICATES
         var n = 1
@@ -254,7 +254,7 @@ struct ProvisioningProfile {
         // DEVICES
         if provisionedDevices.count > 0 {
             html.append("<div class=\"title\">DEVICES ")
-            html.append(String(format: "(%d DEVICES)",provisionedDevices.count))
+            html.append(String(format: "(%d DEVICES)", provisionedDevices.count))
             html.append("</div>")
 
             html.append("<table>")
@@ -266,10 +266,10 @@ struct ProvisioningProfile {
                 if firstChar != c {
                     c = firstChar
                     html.append(String(format: "<td>%@-></td>",c))
-                }else{
-                    html.append(String(format: "<td></td>"))
+                } else {
+                    html.append("<td></td>")
                 }
-                html.append(String(format: "<td>%@</td>",device))
+                html.append("<td>\(device)</td>")
                 html.append("</tr>")
             }
             html.append("</table>")
@@ -290,7 +290,7 @@ struct ProvisioningProfile {
         return html
     }
 
-    func appendHTML(_ html:String, key:String, value:String) -> String{
-        return String(format: "%@<br>%@: %@",html,key,value)
+    func appendHTML(_ html:String, key:String, value:String) -> String {
+        return "\(html)<br>\(key): \(value)"
     }
 }
