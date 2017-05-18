@@ -107,13 +107,7 @@ extension ViewController: NSTableViewDataSource {
             return profile.uuid
 
         case "status":
-            if profile.isExpired {
-                return "Expired"
-            }
-            if profile.isDuplicate {
-                return "Duplicate"
-            }
-            return "Active"
+            return profile.status.description
 
         default:
             return "ERROR"
@@ -161,6 +155,13 @@ extension ViewController: NSTableViewDelegate {
                     viewProfiles.sort { $0.expirationDate.timeIntervalSince1970 < $1.expirationDate.timeIntervalSince1970 }
                 } else {
                     viewProfiles.sort { $0.expirationDate.timeIntervalSince1970 > $1.expirationDate.timeIntervalSince1970 }
+                }
+
+            case "status":
+                if sortDescriptor.ascending {
+                    viewProfiles.sort { $0.status.description < $1.status.description }
+                } else {
+                    viewProfiles.sort { $0.status.description > $1.status.description }
                 }
 
             case "uuid":

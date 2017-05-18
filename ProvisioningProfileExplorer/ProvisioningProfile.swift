@@ -13,6 +13,21 @@ import Cocoa
 
 struct ProvisioningProfile {
 
+    enum Status: CustomStringConvertible {
+        case active, expired, duplicate
+
+        var description: String {
+            switch self {
+            case .active:
+                return "Active"
+            case .expired:
+                return "Expired"
+            case .duplicate:
+                return "Duplicate"
+            }
+        }
+    }
+
     struct JSON {
         static let name = "Name"
         static let creationDate = "CreationDate"
@@ -40,12 +55,12 @@ struct ProvisioningProfile {
     var expirationDate = Date()
     var creationDate = Date()
     var lastDays = 0
-    var entitlements: [String: Any] = [:]
+    var entitlements: Entitlements!
     var certificates: [Certificate] = []
     var fileName = ""
     var fileModificationDate = Date()
     var fileSize:UInt64 = 0
-    var isDuplicate = false
+    var status: Status = .active
 
     init(url: URL) {
 
@@ -91,7 +106,12 @@ struct ProvisioningProfile {
         }
 
         // Entitlements
-        entitlements = plist[JSON.entitlements] as? [String: Any] ?? [:]
+        let ents = plist[JSON.entitlements] as? [String: Any] ?? [:]
+        entitlements = Entitlements(ents)
+
+        if lastDays < 0 {
+            status = .expired
+        }
     }
 
     func decode(_ encryptedData: Data) -> Data? {
@@ -112,15 +132,27 @@ struct ProvisioningProfile {
     }
 
     var isActive: Bool {
-        return !isExpired && !isDuplicate
+        return status == .active
     }
 
     var isExpired: Bool {
-        return lastDays < 0
+        return status == .expired
+    }
+
+    var isDuplicate: Bool {
+        return status == .duplicate
     }
 
     mutating func setDuplicate(_ flag: Bool) -> Void {
-        isDuplicate = flag
+        if flag {
+            status = .duplicate
+        } else {
+            if lastDays < 0 {
+                status = .expired
+            } else {
+                status = .active
+            }
+        }
     }
 
     func match(_ text: String) -> Bool {

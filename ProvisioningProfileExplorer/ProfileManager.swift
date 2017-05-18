@@ -43,7 +43,10 @@ class ProfileManager {
 
         // group profiles by profile name
         for profile in profiles {
-            let name = profile.name
+            guard let name = profile.entitlements.appID else {
+                continue
+            }
+            
             dups[name] == nil ?
                 dups[name] = [profile] :
                 dups[name]?.append(profile)

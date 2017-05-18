@@ -27,57 +27,6 @@ struct ProvisioningProfileDisplay {
         return String(format: "%04d/%02d/%02d %02d:%02d:%02d", year!,month!,day!,hour!,minute!,second!)
     }
 
-    func displayEntitlements(_ tab: Int,  key: String, value: Any, buffer: NSMutableString) {
-
-        if value is NSDictionary {
-            if key.isEmpty {
-                buffer.appendFormat("%@{\n", space(tab))
-            } else {
-                buffer.appendFormat("%@%@ = {\n", space(tab), key)
-            }
-
-            let dictionary = value as! NSDictionary
-            var keys = dictionary.allKeys as! [String]
-            keys.sort()
-
-            for key in keys {
-                displayEntitlements(tab + 1, key: key, value: dictionary.value(forKey: key)! as AnyObject, buffer: buffer)
-            }
-            buffer.appendFormat("%@}\n", space(tab))
-
-        } else if value is NSArray {
-            let array = value as! NSArray
-            buffer.appendFormat("%@%@ = (\n", space(tab), key)
-            for value in array {
-                displayEntitlements(tab + 1, key: "", value: value as! NSObject, buffer: buffer)
-            }
-            buffer.appendFormat("%@)\n", space(tab))
-
-        } else if value is Data {
-            let data = value as! Data
-            if key.isEmpty {
-                buffer.appendFormat("%@%d bytes of data\n", space(tab), data.count)
-            } else {
-                buffer.appendFormat("%@%@ = %d bytes of data\n", space(tab), key, data.count)
-            }
-        } else {
-            let valueText = (value as AnyObject).description
-            if key.isEmpty {
-                buffer.appendFormat("%@%@\n", space(tab), valueText!)
-            } else {
-                buffer.appendFormat("%@%@ = %@\n", space(tab), key, valueText!)
-            }
-        }
-    }
-
-    func space(_ num: Int) -> String {
-        var tmp = ""
-        for _ in 0..<num {
-            tmp = tmp + "    "
-        }
-        return tmp
-    }
-
     func generateHTML() -> String {
         var css = ""
 
@@ -143,16 +92,10 @@ struct ProvisioningProfileDisplay {
 
         // ENTITLEMENTS
         html.append("<div class=\"title\">ENTITLEMENTS</div>")
-        var entitlements = ""
+        var entitlements = "No Entitlements"
 
         if profile.entitlements.isEmpty == false {
-            let buffer = NSMutableString()
-            buffer.appendFormat("<pre>")
-            displayEntitlements(0, key: "", value: profile.entitlements, buffer: buffer)
-            buffer.appendFormat("</pre>")
-            entitlements = buffer as String
-        } else{
-            entitlements = "No Entitlements"
+            entitlements = "<pre>\(profile.entitlements.description)</pre>"
         }
 
         html.append(entitlements)
