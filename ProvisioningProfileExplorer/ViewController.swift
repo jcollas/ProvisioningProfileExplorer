@@ -26,7 +26,7 @@ class ViewController: NSViewController {
 
         _profiles = ProfileManager.shared.profiles
 
-        Search("")
+        search("")
 
         // 一番上を選択する
         let indexSet = IndexSet(integer: 0)
@@ -37,28 +37,25 @@ class ViewController: NSViewController {
     }
 
     //search
-    func Search(_ searchText: String){
+    func search(_ searchText: String) {
         print("Search(\(searchText))")
-        if searchText == "" {
-            viewProfiles = _profiles
-        }else{
-            viewProfiles = []
-            for profile in _profiles {
-                if profile.appIDName.lowercased().contains(searchText.lowercased()) {
-                    viewProfiles.append(profile)
-                }else if profile.name.lowercased().contains(searchText.lowercased()) {
-                    viewProfiles.append(profile)
-                }else if profile.uuid.lowercased().contains(searchText.lowercased()) {
-                    viewProfiles.append(profile)
-                }
-            }
-        }
+
+        viewProfiles = _profiles.filter { $0.match(searchText) }
+
         statusLabel.stringValue = "\(viewProfiles.count) provisioning Profiles"
+
+        // Update UI.
         tableView.reloadData()
+
+        let indexSet = IndexSet(integer: 0)
+        tableView.selectRowIndexes(indexSet, byExtendingSelection: false)
+
+        let notification = Notification(name: Notification.Name(""))
+        tableViewSelectionDidChange(notification)
     }
 
     @IBAction func changeSearchField(_ sender: NSSearchFieldCell) {
-        Search(sender.stringValue)
+        search(sender.stringValue)
     }
 
     // ローカルタイムでのNSDate表示
@@ -101,7 +98,7 @@ extension ViewController: NSTableViewDataSource {
             return profile.name
 
         case "expirationDate":
-            return LocalDate(profile.expirationDate as Date,lastDays: profile.lastDays)
+            return LocalDate(profile.expirationDate, lastDays: profile.lastDays)
 
         case "createDate":
             return profile.creationDate

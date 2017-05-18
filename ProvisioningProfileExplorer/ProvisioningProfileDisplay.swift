@@ -97,8 +97,8 @@ struct ProvisioningProfileDisplay {
 
         html.append("<div class=\"name\">\(profile.name)</div>")
         html = appendHTML(html, key: "Profile UUID",value: profile.uuid)
-        html = appendHTML(html, key: "Time To Live",value: "\(profile.timeToLive)")
-        html = appendHTML(html, key: "Profile Team",value: profile.teamName)
+        html = appendHTML(html, key: "Time To Live", value: "\(profile.timeToLive)")
+        html = appendHTML(html, key: "Profile Team", value: profile.teamName)
         if profile.teamIdentifier.count>0 {
             html.append("(")
             for team in profile.teamIdentifier {

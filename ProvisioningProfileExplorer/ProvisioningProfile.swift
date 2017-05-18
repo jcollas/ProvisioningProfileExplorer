@@ -123,6 +123,33 @@ struct ProvisioningProfile {
         isDuplicate = flag
     }
 
+    func match(_ text: String) -> Bool {
+        let searchText = text.lowercased()
+
+        if searchText == "" {
+            return true
+        }
+
+        if appIDName.lowercased().contains(searchText) {
+            return true
+        }
+        if name.lowercased().contains(searchText) {
+            return true
+        }
+        if uuid.lowercased().contains(searchText) {
+            return true
+        }
+
+        // Scan through the certificates
+        for certificate in certificates {
+            if certificate.summary.lowercased().contains(searchText) {
+                return true
+            }
+        }
+
+        return false
+    }
+
 }
 
 extension ProvisioningProfile: Equatable {}
