@@ -11,7 +11,6 @@ import Cocoa
 //import SecurityInterface
 //import SecurityFoundation
 
-
 struct ProvisioningProfile {
 
     struct JSON {
@@ -115,4 +114,13 @@ struct ProvisioningProfile {
         return lastDays < 0
     }
 
+}
+
+extension ProvisioningProfile: Equatable {}
+
+func ==(lhs: ProvisioningProfile, rhs: ProvisioningProfile) -> Bool {
+    let areEqual = lhs.name == rhs.name &&
+            rhs.appIDName == lhs.appIDName
+
+    return areEqual
 }

@@ -83,7 +83,7 @@ struct ProvisioningProfileDisplay {
         var css = ""
 
         if let filePath = Bundle.main.path(forResource: "style", ofType: "css"){
-            css  = try! String(contentsOfFile: filePath)
+            css = try! String(contentsOfFile: filePath)
         }
 
         var html = "<html>"

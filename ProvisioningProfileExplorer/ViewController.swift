@@ -24,20 +24,7 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let manager = FileManager.default
-
-        let path = NSHomeDirectory() + "/Library/MobileDevice/Provisioning Profiles"
-        let provisioningUrl = URL(fileURLWithPath: path)
-        let profileUrls = try! manager.contentsOfDirectory(at: provisioningUrl, includingPropertiesForKeys: nil)
-
-        for url in profileUrls {
-
-            if url.pathExtension != "mobileprovision" {
-                continue
-            }
-
-            _profiles.append(ProvisioningProfile(url: url))
-        }
+        _profiles = ProfileManager.shared.profiles
 
         Search("")
 
@@ -47,37 +34,6 @@ class ViewController: NSViewController {
 
         let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles[0])
         webView.mainFrame.loadHTMLString(profileDisplay.generateHTML(),baseURL: nil)
-
-        _ = duplicateProfiles()
-    }
-
-    func activeProfiles() -> [ProvisioningProfile] {
-        return []
-    }
-
-    func expiredProfiles() -> [ProvisioningProfile] {
-        return _profiles.filter { $0.isExpired }
-    }
-
-    func duplicateProfiles() -> [ProvisioningProfile] {
-        var allDups: [ProvisioningProfile] = []
-        var dups: [String: [ProvisioningProfile]] = [:]
-
-        // group profiles by profile name
-        for profile in _profiles {
-            let name = profile.name
-            dups[name] == nil ?
-                dups[name] = [profile] :
-                dups[name]?.append(profile)
-        }
-
-        for key in dups.keys {
-            if let values = dups[key]?.sorted(by: { $0.expirationDate > $1.expirationDate}) {
-            allDups.append(contentsOf: Array(values[1..<values.count]))
-            }
-        }
-
-        return allDups
     }
 
     //search
