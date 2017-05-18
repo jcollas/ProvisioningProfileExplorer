@@ -43,9 +43,11 @@ class ProfileManager {
 
         // group profiles by profile name
         for profile in profiles {
-            guard let name = profile.entitlements.appID else {
+            guard let appID = profile.entitlements.appID else {
                 continue
             }
+
+            let name = "\(appID):\(profile.entitlements.taskAllow)"
             
             dups[name] == nil ?
                 dups[name] = [profile] :
@@ -54,11 +56,8 @@ class ProfileManager {
 
         for key in dups.keys {
             if let values = dups[key]?.sorted(by: { $0.expirationDate > $1.expirationDate}) {
-                for var value in values {
-                    value.setDuplicate(true)
-                }
-                var first = values.first
-                first?.setDuplicate(false)
+                _ = values.map { $0.setDuplicate(true) }
+                values.first?.setDuplicate(false)
             }
         }
 

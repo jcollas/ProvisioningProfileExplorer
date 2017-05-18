@@ -11,7 +11,7 @@ import Cocoa
 //import SecurityInterface
 //import SecurityFoundation
 
-struct ProvisioningProfile {
+class ProvisioningProfile {
 
     enum Status: CustomStringConvertible {
         case active, expired, duplicate
@@ -143,7 +143,7 @@ struct ProvisioningProfile {
         return status == .duplicate
     }
 
-    mutating func setDuplicate(_ flag: Bool) -> Void {
+    func setDuplicate(_ flag: Bool) -> Void {
         if flag {
             status = .duplicate
         } else {
