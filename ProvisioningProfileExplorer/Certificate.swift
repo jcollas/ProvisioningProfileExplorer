@@ -48,3 +48,12 @@ struct Certificate {
     }
     
 }
+
+extension Certificate: Equatable {}
+
+func ==(lhs: Certificate, rhs: Certificate) -> Bool {
+    let areEqual = lhs.summary == rhs.summary &&
+            lhs.expires == rhs.expires
+
+    return areEqual
+}

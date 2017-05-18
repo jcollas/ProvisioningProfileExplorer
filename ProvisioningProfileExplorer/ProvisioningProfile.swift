@@ -119,8 +119,7 @@ struct ProvisioningProfile {
 extension ProvisioningProfile: Equatable {}
 
 func ==(lhs: ProvisioningProfile, rhs: ProvisioningProfile) -> Bool {
-    let areEqual = lhs.name == rhs.name &&
-            rhs.appIDName == lhs.appIDName
+    let areEqual = lhs.uuid == rhs.uuid
 
     return areEqual
 }

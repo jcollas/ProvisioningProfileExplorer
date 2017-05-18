@@ -48,11 +48,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D7BD95311CB9F04E00FFA177 = {
+		C09F378A1ECDABBB009E81F0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				D7BD95671CB9F6D100FFA177 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D7BD95311CB9F04E00FFA177 = {
+			isa = PBXGroup;
+			children = (
 				D7BD953C1CB9F04E00FFA177 /* ProvisioningProfileExplorer */,
+				C09F378A1ECDABBB009E81F0 /* Frameworks */,
 				D7BD953B1CB9F04E00FFA177 /* Products */,
 			);
 			sourceTree = "<group>";
