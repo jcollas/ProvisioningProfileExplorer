@@ -91,22 +91,32 @@ extension ViewController: NSTableViewDataSource {
     }
 
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
+        let profile = viewProfiles[row]
 
         switch tableColumn!.identifier {
         case "teamName":
-            return viewProfiles[row].teamName
+            return profile.teamName
 
         case "name":
-            return viewProfiles[row].name
+            return profile.name
 
         case "expirationDate":
-            return LocalDate(viewProfiles[row].expirationDate as Date,lastDays: viewProfiles[row].lastDays)
+            return LocalDate(profile.expirationDate as Date,lastDays: profile.lastDays)
 
         case "createDate":
-            return viewProfiles[row].creationDate
+            return profile.creationDate
 
         case "uuid":
-            return viewProfiles[row].uuid
+            return profile.uuid
+
+        case "status":
+            if profile.isExpired {
+                return "Expired"
+            }
+            if profile.isDuplicate {
+                return "Duplicate"
+            }
+            return "Active"
 
         default:
             return "ERROR"

@@ -673,32 +673,32 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="ProvisioningProfileExplorer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="910" height="732"/>
+                        <rect key="frame" x="0.0" y="0.0" width="994" height="732"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <splitView arrangesAllSubviews="NO" dividerStyle="paneSplitter" translatesAutoresizingMaskIntoConstraints="NO" id="ZEJ-Ce-KgT">
-                                <rect key="frame" x="0.0" y="25" width="910" height="672"/>
+                                <rect key="frame" x="0.0" y="25" width="994" height="672"/>
                                 <subviews>
                                     <customView id="xsY-VY-66o">
-                                        <rect key="frame" x="0.0" y="0.0" width="910" height="324"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="994" height="324"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMe-wD-Ndj">
-                                                <rect key="frame" x="0.0" y="0.0" width="910" height="324"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="994" height="324"/>
                                                 <clipView key="contentView" id="MgH-ZS-Ack">
-                                                    <rect key="frame" x="1" y="0.0" width="908" height="323"/>
+                                                    <rect key="frame" x="1" y="0.0" width="992" height="323"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" headerView="IC7-ue-RJW" id="Kdy-xv-7sm">
-                                                            <rect key="frame" x="0.0" y="0.0" width="982" height="300"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="992" height="300"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
-                                                                <tableColumn identifier="teamName" width="120" minWidth="120" maxWidth="3.4028234663852886e+38" id="xML-fS-I8s">
+                                                                <tableColumn identifier="teamName" width="160" minWidth="160" maxWidth="3.4028234663852886e+38" id="xML-fS-I8s">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Team Name">
-                                                                        <font key="font" metaFont="systemMedium" size="11"/>
+                                                                        <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                     </tableHeaderCell>
@@ -710,7 +710,7 @@
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="teamName"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 </tableColumn>
-                                                                <tableColumn identifier="name" editable="NO" width="400" minWidth="400" maxWidth="1000" id="aRb-PL-nz4">
+                                                                <tableColumn identifier="name" editable="NO" width="300" minWidth="300" maxWidth="1000" id="aRb-PL-nz4">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Name">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -726,7 +726,7 @@
                                                                 </tableColumn>
                                                                 <tableColumn identifier="expirationDate" editable="NO" width="150" minWidth="150" maxWidth="1000" id="Sio-gN-eRU">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Expiration Date">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="systemMedium" size="11"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                     </tableHeaderCell>
@@ -738,7 +738,7 @@
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="expirationDate"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 </tableColumn>
-                                                                <tableColumn identifier="uuid" editable="NO" width="300" minWidth="300" maxWidth="3.4028234663852886e+38" id="M6h-13-sCb">
+                                                                <tableColumn identifier="uuid" editable="NO" width="250" minWidth="250" maxWidth="500" id="M6h-13-sCb">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="UUID">
                                                                         <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -752,6 +752,20 @@
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="uuid"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 </tableColumn>
+                                                                <tableColumn identifier="status" editable="NO" width="80" minWidth="80" maxWidth="3.4028234663852886e+38" id="u5P-V6-J10">
+                                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
+                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                    </tableHeaderCell>
+                                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="frx-Z6-Kx5">
+                                                                        <font key="font" size="11" name="Monaco"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="status"/>
+                                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                                </tableColumn>
                                                             </tableColumns>
                                                             <connections>
                                                                 <outlet property="dataSource" destination="XfG-lQ-9wD" id="4OZ-k4-wgZ"/>
@@ -760,8 +774,8 @@
                                                         </tableView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="qzw-RE-7aS">
-                                                    <rect key="frame" x="1" y="307" width="908" height="16"/>
+                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="qzw-RE-7aS">
+                                                    <rect key="frame" x="1" y="307" width="992" height="16"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="tuB-4G-aaa">
@@ -769,7 +783,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <tableHeaderView key="headerView" id="IC7-ue-RJW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="982" height="23"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="992" height="23"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableHeaderView>
                                             </scrollView>
@@ -782,11 +796,11 @@
                                         </constraints>
                                     </customView>
                                     <customView id="zGi-e3-KFh">
-                                        <rect key="frame" x="0.0" y="334" width="910" height="338"/>
+                                        <rect key="frame" x="0.0" y="334" width="994" height="338"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <webView translatesAutoresizingMaskIntoConstraints="NO" id="335-dD-QXu">
-                                                <rect key="frame" x="0.0" y="0.0" width="910" height="338"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="994" height="338"/>
                                                 <webPreferences key="preferences" defaultFontSize="16" defaultFixedFontSize="13" minimumFontSize="0">
                                                     <nil key="identifier"/>
                                                 </webPreferences>
@@ -806,7 +820,7 @@
                                 </holdingPriorities>
                             </splitView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yQ2-gv-GHZ">
-                                <rect key="frame" x="18" y="5" width="874" height="17"/>
+                                <rect key="frame" x="18" y="5" width="958" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="pke-kt-n7l">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -814,7 +828,7 @@
                                 </textFieldCell>
                             </textField>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8FX-WJ-L1w">
-                                <rect key="frame" x="562" y="705" width="336" height="22"/>
+                                <rect key="frame" x="646" y="705" width="336" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="336" id="7R5-X3-n0g"/>
                                 </constraints>
@@ -849,7 +863,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="290" y="886"/>
+            <point key="canvasLocation" x="526" y="858"/>
         </scene>
     </scenes>
 </document>
