@@ -79,7 +79,6 @@ struct ProvisioningProfileDisplay {
     }
 
     func generateHTML() -> String {
-
         var css = ""
 
         if let filePath = Bundle.main.path(forResource: "style", ofType: "css"){
@@ -96,28 +95,29 @@ struct ProvisioningProfileDisplay {
         }
 
         html.append("<div class=\"name\">\(profile.name)</div>")
-        html = appendHTML(html, key: "Profile UUID",value: profile.uuid)
-        html = appendHTML(html, key: "Time To Live", value: "\(profile.timeToLive)")
-        html = appendHTML(html, key: "Profile Team", value: profile.teamName)
-        if profile.teamIdentifier.count>0 {
-            html.append("(")
-            for team in profile.teamIdentifier {
-                html.append("\(team) ")
-            }
-            html.append(")")
+        html.append("<br>Profile UUID: \(profile.uuid)")
+        html.append("<br>Time To Live: \(profile.timeToLive)")
+        html.append("<br>Profile Team: \(profile.teamName)")
+
+        if profile.teamIdentifier.isEmpty == false {
+            let teams = profile.teamIdentifier.joined(separator: " ")
+            html.append(" (\(teams))")
         }
-        html = appendHTML(html, key: "Creation Date", value: LocalDate(profile.creationDate))
-        html = appendHTML(html, key: "Expiration Date",value: LocalDate(profile.expirationDate))
+
+        html.append("<br>Creation Date: \(LocalDate(profile.creationDate))")
+        html.append("<br>Expiration Date: \(LocalDate(profile.expirationDate))")
+
         if profile.lastDays < 0 {
             html.append(" expiring ")
-        }else{
-            html.append(" ( " + profile.lastDays.description + " days )")
+        } else {
+            html.append(" ( \(profile.lastDays) days )")
         }
-        html = appendHTML(html, key: "App ID Name", value: profile.appIDName)
+
+        html.append("<br>App ID Name: \(profile.appIDName)")
 
         // DEVELOPER CRTIFICATES
         var n = 1
-        if profile.certificates.count > 0 {
+        if profile.certificates.isEmpty == false {
             html.append("<div class=\"title\">DEVELOPER CRTIFICATES</div>")
             html.append("<table>")
             for certificate in profile.certificates {
@@ -145,7 +145,7 @@ struct ProvisioningProfileDisplay {
         html.append("<div class=\"title\">ENTITLEMENTS</div>")
         var entitlements = ""
 
-        if profile.entitlements.count > 0 {
+        if profile.entitlements.isEmpty == false {
             let buffer = NSMutableString()
             buffer.appendFormat("<pre>")
             displayEntitlements(0, key: "", value: profile.entitlements, buffer: buffer)
@@ -158,7 +158,7 @@ struct ProvisioningProfileDisplay {
         html.append(entitlements)
 
         // DEVICES
-        if profile.provisionedDevices.count > 0 {
+        if profile.provisionedDevices.isEmpty == false {
             html.append("<div class=\"title\">DEVICES ")
             html.append("(\(profile.provisionedDevices.count) DEVICES)")
             html.append("</div>")
@@ -187,17 +187,14 @@ struct ProvisioningProfileDisplay {
         // FILE INFOMATION
         html.append("<div class=\"title\">FILE INFOMATION</div>")
         html.append("<br>Path: \(profile.fileName)")
-        html.append("<br>size: \(profile.fileSize/1000)Kbyte")
+        html.append("<br>size: \(profile.fileSize/1000) Kbyte")
         html.append("<br>ModificationDate: \(LocalDate(profile.fileModificationDate))")
 
 
         html.append("</body>")
         html.append("</html>")
-        return html
-    }
 
-    func appendHTML(_ html:String, key:String, value:String) -> String {
-        return "\(html)<br>\(key): \(value)"
+        return html
     }
 
 }
