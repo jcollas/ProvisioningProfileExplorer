@@ -30,12 +30,12 @@ struct Entitlements: CustomStringConvertible {
         return entitlements[JSON.taskAllow] as? Bool ?? false
     }
 
-    var appID: String? {
-        return entitlements[JSON.appID] as? String
+    var appID: String {
+        return entitlements[JSON.appID] as! String
     }
 
-    var teamID: String? {
-        return entitlements[JSON.teamID] as? String
+    var teamID: String {
+        return entitlements[JSON.teamID] as! String
     }
 
     var isEmpty: Bool {

@@ -171,6 +171,9 @@ class ProvisioningProfile {
         if uuid.lowercased().contains(searchText) {
             return true
         }
+        if entitlements.appID.lowercased().contains(searchText) {
+            return true
+        }
 
         // Scan through the certificates
         for certificate in certificates {
