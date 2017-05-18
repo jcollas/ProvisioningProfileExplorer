@@ -35,24 +35,10 @@ class ProfileManager {
             profiles.append(ProvisioningProfile(url: url))
         }
 
+        processDuplicates()
     }
 
-
-    /// Returns all unique and unexpired provisioning profiles
-    ///
-    /// - Returns: all unique and unexpired profiles
-    func active() -> [ProvisioningProfile] {
-        let dups = duplicates()
-
-        return profiles.filter { (elem) in dups.contains(elem) == false && elem.isExpired == false }
-    }
-
-    func expired() -> [ProvisioningProfile] {
-        return profiles.filter { $0.isExpired }
-    }
-
-    func duplicates() -> [ProvisioningProfile] {
-        var allDups: [ProvisioningProfile] = []
+    func processDuplicates() -> Void {
         var dups: [String: [ProvisioningProfile]] = [:]
 
         // group profiles by profile name
@@ -65,11 +51,29 @@ class ProfileManager {
 
         for key in dups.keys {
             if let values = dups[key]?.sorted(by: { $0.expirationDate > $1.expirationDate}) {
-                allDups.append(contentsOf: Array(values[1..<values.count]))
+                for var value in values {
+                    value.setDuplicate(true)
+                }
+                var first = values.first
+                first?.setDuplicate(false)
             }
         }
 
-        return allDups
+    }
+
+    /// Returns all unique and unexpired provisioning profiles
+    ///
+    /// - Returns: all unique and unexpired profiles
+    func active() -> [ProvisioningProfile] {
+        return profiles.filter { $0.isActive }
+    }
+
+    func expired() -> [ProvisioningProfile] {
+        return profiles.filter { $0.isExpired }
+    }
+
+    func duplicates() -> [ProvisioningProfile] {
+        return profiles.filter { $0.isDuplicate }
     }
 
 }

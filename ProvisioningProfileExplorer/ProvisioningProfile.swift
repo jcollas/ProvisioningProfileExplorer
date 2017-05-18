@@ -45,6 +45,7 @@ struct ProvisioningProfile {
     var fileName = ""
     var fileModificationDate = Date()
     var fileSize:UInt64 = 0
+    var isDuplicate = false
 
     init(url: URL) {
 
@@ -110,8 +111,16 @@ struct ProvisioningProfile {
         return nil
     }
 
+    var isActive: Bool {
+        return !isExpired && !isDuplicate
+    }
+
     var isExpired: Bool {
         return lastDays < 0
+    }
+
+    mutating func setDuplicate(_ flag: Bool) -> Void {
+        isDuplicate = flag
     }
 
 }
