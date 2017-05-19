@@ -18,11 +18,15 @@ class ViewController: NSViewController {
     @IBOutlet weak var webView: WebView!
     @IBOutlet weak var statusLabel: NSTextField!
 
+    let dateFormatter = DateFormatter()
+
     var _profiles: [ProvisioningProfile] = []
     var viewProfiles: [ProvisioningProfile] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        dateFormatter.dateFormat = "yyyy/MM/dd"
 
         _profiles = ProfileManager.shared.profiles
 
@@ -58,20 +62,6 @@ class ViewController: NSViewController {
         search(sender.stringValue)
     }
 
-    // ローカルタイムでのNSDate表示
-    func LocalDate(_ date: Date,lastDays: Int) -> String {
-        let calendar = Calendar.current
-        let comps = (calendar as NSCalendar).components([.year, .month, .day, .hour, .minute, .second], from:date)
-        let year = comps.year
-        let month = comps.month
-        let day = comps.day
-        var last = "expiring"
-        if lastDays >= 0 {
-            last = "(\(lastDays)days)"
-        }
-        return String(format: "%04d/%02d/%02d %@", year!,month!,day!,last)
-    }
-
     override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
@@ -98,7 +88,9 @@ extension ViewController: NSTableViewDataSource {
             return profile.name
 
         case "expirationDate":
-            return LocalDate(profile.expirationDate, lastDays: profile.lastDays)
+            let dateValue = dateFormatter.string(from: profile.expirationDate)
+            let last = profile.lastDays < 0 ? "expiring" : "(\(profile.lastDays)days)"
+            return "\(dateValue) \(last)"
 
         case "createDate":
             return profile.creationDate

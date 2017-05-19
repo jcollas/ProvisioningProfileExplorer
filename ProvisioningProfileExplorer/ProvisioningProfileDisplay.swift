@@ -9,22 +9,13 @@
 import Foundation
 
 struct ProvisioningProfileDisplay {
+    let dateFormatter = DateFormatter()
     var profile: ProvisioningProfile
 
     init(profile: ProvisioningProfile) {
         self.profile = profile
-    }
 
-    func LocalDate(_ date: Date) -> String {
-        let calendar = Calendar.current
-        let comps = (calendar as NSCalendar).components([.year, .month, .day, .hour, .minute, .second], from:date)
-        let year = comps.year
-        let month = comps.month
-        let day = comps.day
-        let hour = comps.hour
-        let minute = comps.minute
-        let second = comps.second
-        return String(format: "%04d/%02d/%02d %02d:%02d:%02d", year!,month!,day!,hour!,minute!,second!)
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
     }
 
     func generateHTML() -> String {
@@ -53,8 +44,10 @@ struct ProvisioningProfileDisplay {
             html.append(" (\(teams))")
         }
 
-        html.append("<br>Creation Date: \(LocalDate(profile.creationDate))")
-        html.append("<br>Expiration Date: \(LocalDate(profile.expirationDate))")
+        var value = dateFormatter.string(from: profile.creationDate)
+        html.append("<br>Creation Date: \(value)")
+        value = dateFormatter.string(from: profile.expirationDate)
+        html.append("<br>Expiration Date: \(value))")
 
         if profile.lastDays < 0 {
             html.append(" expiring ")
@@ -131,7 +124,8 @@ struct ProvisioningProfileDisplay {
         html.append("<div class=\"title\">FILE INFOMATION</div>")
         html.append("<br>Path: \(profile.fileName)")
         html.append("<br>size: \(profile.fileSize/1000) Kbyte")
-        html.append("<br>ModificationDate: \(LocalDate(profile.fileModificationDate))")
+        value = dateFormatter.string(from: profile.fileModificationDate)
+        html.append("<br>ModificationDate: \(value)")
 
 
         html.append("</body>")
