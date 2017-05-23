@@ -34,6 +34,12 @@ struct Entitlements: CustomStringConvertible {
         return entitlements[JSON.appID] as! String
     }
 
+    var bundleID: String {
+        let parts = appID.components(separatedBy: ".")
+
+        return parts[1..<parts.count].joined(separator: ".")
+    }
+
     var teamID: String {
         return entitlements[JSON.teamID] as! String
     }

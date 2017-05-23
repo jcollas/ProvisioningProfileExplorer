@@ -10,9 +10,9 @@ import Foundation
 
 struct ProvisioningProfileDisplay {
     let dateFormatter = DateFormatter()
-    var profile: ProvisioningProfile
+    var profile: ProvisioningProfile?
 
-    init(profile: ProvisioningProfile) {
+    init(profile: ProvisioningProfile?) {
         self.profile = profile
 
         dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
@@ -20,6 +20,10 @@ struct ProvisioningProfileDisplay {
 
     func generateHTML() -> String {
         var css = ""
+
+        guard let profile = profile else {
+            return ""
+        }
 
         if let filePath = Bundle.main.path(forResource: "style", ofType: "css"){
             css = try! String(contentsOfFile: filePath)

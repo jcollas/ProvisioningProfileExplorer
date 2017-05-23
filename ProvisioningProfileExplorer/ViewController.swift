@@ -20,7 +20,11 @@ class ViewController: NSViewController {
 
     let dateFormatter = DateFormatter()
 
-    var _profiles: [ProvisioningProfile] = []
+    var profiles: [ProvisioningProfile] = [] {
+        didSet {
+            search("")
+        }
+    }
     var viewProfiles: [ProvisioningProfile] = []
 
     override func viewDidLoad() {
@@ -28,15 +32,13 @@ class ViewController: NSViewController {
 
         dateFormatter.dateFormat = "yyyy/MM/dd"
 
-        _profiles = ProfileManager.shared.profiles
-
         search("")
 
         // 一番上を選択する
         let indexSet = IndexSet(integer: 0)
         tableView.selectRowIndexes(indexSet, byExtendingSelection: true)
 
-        let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles[0])
+        let profileDisplay = ProvisioningProfileDisplay(profile: viewProfiles.first)
         webView.mainFrame.loadHTMLString(profileDisplay.generateHTML(),baseURL: nil)
     }
 
@@ -44,7 +46,7 @@ class ViewController: NSViewController {
     func search(_ searchText: String) {
         print("Search(\(searchText))")
 
-        viewProfiles = _profiles.filter { $0.match(searchText) }
+        viewProfiles = profiles.filter { $0.match(searchText) }
 
         statusLabel.stringValue = "\(viewProfiles.count) provisioning Profiles"
 
@@ -95,8 +97,11 @@ extension ViewController: NSTableViewDataSource {
         case "createDate":
             return profile.creationDate
 
-        case "uuid":
-            return profile.uuid
+        case "bundleID":
+            return profile.entitlements.bundleID
+
+        case "teamID":
+            return profile.entitlements.teamID
 
         case "status":
             return profile.status.description
@@ -156,15 +161,22 @@ extension ViewController: NSTableViewDelegate {
                     viewProfiles.sort { $0.status.description > $1.status.description }
                 }
 
-            case "uuid":
-                fallthrough
+            case "teamID":
+                if sortDescriptor.ascending {
+                    viewProfiles.sort { $0.entitlements.teamID < $1.entitlements.teamID }
+                } else {
+                    viewProfiles.sort { $0.entitlements.teamID > $1.entitlements.teamID }
+                }
+
+            case "bundleID":
+                if sortDescriptor.ascending {
+                    viewProfiles.sort { $0.entitlements.bundleID < $1.entitlements.bundleID }
+                } else {
+                    viewProfiles.sort { $0.entitlements.bundleID > $1.entitlements.bundleID }
+                }
 
             default:
-                if sortDescriptor.ascending {
-                    viewProfiles.sort { $0.uuid < $1.uuid }
-                } else {
-                    viewProfiles.sort { $0.uuid > $1.uuid }
-                }
+                break
             }
             break // 一回でいい
         }

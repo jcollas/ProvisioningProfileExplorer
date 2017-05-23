@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		C08419681ECBECAB004A160E /* Entitlements.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08419671ECBECAA004A160E /* Entitlements.swift */; };
 		C09F37871ECC7E81009E81F0 /* ProvisioningProfileDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09F37861ECC7E81009E81F0 /* ProvisioningProfileDisplay.swift */; };
-		C09F37891ECCCCDA009E81F0 /* ProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09F37881ECCCCDA009E81F0 /* ProfileManager.swift */; };
+		C09F37891ECCCCDA009E81F0 /* PPDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09F37881ECCCCDA009E81F0 /* PPDocument.swift */; };
+		C09F37A91ED36ED6009E81F0 /* PPDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09F37A81ED36ED6009E81F0 /* PPDocumentController.swift */; };
 		D77D43721CBC75C400A579B7 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = D77D43711CBC75C400A579B7 /* style.css */; };
 		D7BD953E1CB9F04E00FFA177 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BD953D1CB9F04E00FFA177 /* AppDelegate.swift */; };
 		D7BD95401CB9F04E00FFA177 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BD953F1CB9F04E00FFA177 /* ViewController.swift */; };
@@ -23,7 +24,8 @@
 /* Begin PBXFileReference section */
 		C08419671ECBECAA004A160E /* Entitlements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entitlements.swift; sourceTree = "<group>"; };
 		C09F37861ECC7E81009E81F0 /* ProvisioningProfileDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProvisioningProfileDisplay.swift; sourceTree = "<group>"; };
-		C09F37881ECCCCDA009E81F0 /* ProfileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileManager.swift; sourceTree = "<group>"; };
+		C09F37881ECCCCDA009E81F0 /* PPDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PPDocument.swift; sourceTree = "<group>"; };
+		C09F37A81ED36ED6009E81F0 /* PPDocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PPDocumentController.swift; sourceTree = "<group>"; };
 		D77D43711CBC75C400A579B7 /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		D7BD953A1CB9F04E00FFA177 /* ProvisioningProfileExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProvisioningProfileExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7BD953D1CB9F04E00FFA177 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -76,12 +78,14 @@
 		D7BD953C1CB9F04E00FFA177 /* ProvisioningProfileExplorer */ = {
 			isa = PBXGroup;
 			children = (
-				D77D43711CBC75C400A579B7 /* style.css */,
-				D7BD956D1CB9F8BD00FFA177 /* Model */,
 				D7BD953D1CB9F04E00FFA177 /* AppDelegate.swift */,
+				C09F37A81ED36ED6009E81F0 /* PPDocumentController.swift */,
+				C09F37881ECCCCDA009E81F0 /* PPDocument.swift */,
 				D7BD953F1CB9F04E00FFA177 /* ViewController.swift */,
 				C09F37861ECC7E81009E81F0 /* ProvisioningProfileDisplay.swift */,
+				D7BD956D1CB9F8BD00FFA177 /* Model */,
 				D7BD95461CB9F04E00FFA177 /* Info.plist */,
+				D77D43711CBC75C400A579B7 /* style.css */,
 				D7BD95411CB9F04E00FFA177 /* Assets.xcassets */,
 				D7BD95431CB9F04E00FFA177 /* Main.storyboard */,
 			);
@@ -94,7 +98,6 @@
 				D7CE24DB1CBA2C980017CE12 /* ProvisioningProfile.swift */,
 				D7C567741CC1992F001C74DD /* Certificate.swift */,
 				C08419671ECBECAA004A160E /* Entitlements.swift */,
-				C09F37881ECCCCDA009E81F0 /* ProfileManager.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -171,10 +174,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C09F37A91ED36ED6009E81F0 /* PPDocumentController.swift in Sources */,
 				D7CE24DC1CBA2C980017CE12 /* ProvisioningProfile.swift in Sources */,
 				D7BD95401CB9F04E00FFA177 /* ViewController.swift in Sources */,
 				D7BD953E1CB9F04E00FFA177 /* AppDelegate.swift in Sources */,
-				C09F37891ECCCCDA009E81F0 /* ProfileManager.swift in Sources */,
+				C09F37891ECCCCDA009E81F0 /* PPDocument.swift in Sources */,
 				D7C567751CC1992F001C74DD /* Certificate.swift in Sources */,
 				C09F37871ECC7E81009E81F0 /* ProvisioningProfileDisplay.swift in Sources */,
 				C08419681ECBECAB004A160E /* Entitlements.swift in Sources */,
