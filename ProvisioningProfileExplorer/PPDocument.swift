@@ -1,9 +1,8 @@
 //
-//  ProfileManager.swift
+//  PPDocument.swift
 //  ProvisioningProfileExplorer
 //
-//  Created by Collas,Juan J on 5/17/17.
-//  Copyright © 2017 SAPPOROWORKS. All rights reserved.
+//  Created by Juan J. Collas on 5/17/17.
 //
 
 import Cocoa

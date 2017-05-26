@@ -2,8 +2,7 @@
 //  PPDocumentController.swift
 //  ProvisioningProfileExplorer
 //
-//  Created by Collas,Juan J on 5/22/17.
-//  Copyright © 2017 SAPPOROWORKS. All rights reserved.
+//  Created by Juan J. Collas on 5/22/17.
 //
 
 import Cocoa
