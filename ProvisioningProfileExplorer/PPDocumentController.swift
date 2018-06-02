@@ -17,7 +17,7 @@ class PPDocumentController: NSDocumentController {
         panel.allowsMultipleSelection = false
 
         panel.begin {  result -> Void in
-            if (result == NSFileHandlingPanelOKButton) {
+            if (result.rawValue == NSFileHandlingPanelOKButton) {
                 let selectedURL = panel.urls[0]
                 NSLog("selected URL: \(selectedURL)")
                 self.openDocument(withContentsOf: selectedURL, display: true) { (document, documentWasAlreadyOpen, error) in

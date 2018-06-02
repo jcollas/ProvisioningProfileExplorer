@@ -14,7 +14,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate {
     override init() {
         super.init()
         // Insert code here to initialize your application
-        _ = PPDocumentController.shared()
+        _ = PPDocumentController.shared
     }
     
     required init?(coder: NSCoder) {
@@ -26,7 +26,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate {
         let path = NSHomeDirectory() + "/Library/MobileDevice/Provisioning Profiles"
         let url = URL(fileURLWithPath: path)
 
-        let documentController = PPDocumentController.shared()
+        let documentController = PPDocumentController.shared
 
         documentController.openDocument(withContentsOf: url, display: true) { (document, value, error) -> Void in
         }

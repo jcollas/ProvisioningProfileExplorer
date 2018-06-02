@@ -82,7 +82,7 @@ extension ViewController: NSTableViewDataSource {
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
         let profile = viewProfiles[row]
 
-        switch tableColumn!.identifier {
+        switch tableColumn!.identifier.rawValue {
         case "teamName":
             return profile.teamName
 
